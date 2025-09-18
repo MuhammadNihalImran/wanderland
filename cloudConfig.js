@@ -1,25 +1,21 @@
-require("dotenv").config(); // Load environment variables
-
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-// Configure Cloudinary with environment variables
+// Ensure environment variables are loaded
+require("dotenv").config();
+
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME.trim(),
+  api_key: process.env.CLOUDINARY_API_KEY.trim(),
+  api_secret: process.env.CLOUDINARY_API_SECRET.trim(),
 });
 
-// Set up Cloudinary storage
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
+  cloudinary,
   params: {
     folder: "wanderlust_DEV",
-    allowedFormats: ["png", "jpg", "jpeg"], // Correct typo in allowedFormats
+    allowedFormats: ["jpg", "jpeg", "png"],
   },
 });
 
-module.exports = {
-  cloudinary,
-  storage,
-};
+module.exports = { cloudinary, storage };
