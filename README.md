@@ -128,3 +128,13 @@ rating.css and add css
 3. third party servies "cloudinary"
 4. multer store cloudinary `npm i cloudinary multer-store-cloudinary`
 5. create cloudConfig.js file and import in listing.js
+
+**filter**
+
+1. add category in listing schema like:
+   category:{
+   type:string,
+   enum:["mountain","rooms","cities",...]
+   }
+
+use connect-mongo package

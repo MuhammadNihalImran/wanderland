@@ -27,7 +27,13 @@ router.get("/new", isLoggedIn, listingController.showForm);
 router
   .route("/:id")
   .get(wrapAcync(listingController.showAllListings))
-  .put(validateListings, isOwner, wrapAcync(listingController.editListing))
+  .put(
+    isLoggedIn,
+    isOwner,
+    upload.single("listing[image]"), // 👈 multer add karo
+    validateListings,
+    wrapAcync(listingController.editListing)
+  )
   .delete(isLoggedIn, isOwner, wrapAcync(listingController.destroyListing));
 
 //create edit route

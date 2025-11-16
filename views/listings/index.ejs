@@ -1,7 +1,80 @@
 <% layout('/layouts/boilerplate.ejs') -%>
+
+<div id="filters">
+  <div class="filter">
+    <div><i class="fas fa-fire"></i></div>
+    <p>Trending</p>
+  </div>
+  <div class="filter">
+    <div><i class="fas fa-mountain"></i></div>
+    <p>Mountains</p>
+  </div>
+  <div class="filter">
+    <div><i class="fas fa-umbrella-beach"></i></div>
+    <p>Beaches</p>
+  </div>
+  <div class="filter">
+    <div><i class="fas fa-campground"></i></div>
+    <p>Camping</p>
+  </div>
+  <div class="filter">
+    <div><i class="fas fa-tree"></i></div>
+    <p>Parks</p>
+  </div>
+  <div class="filter">
+    <div><i class="fas fa-city"></i></div>
+    <p>Cities</p>
+  </div>
+  <div class="filter">
+    <div><i class="fas fa-water"></i></div>
+    <p>Lakes</p>
+  </div>
+  <div class="filter">
+    <div><i class="fas fa-skiing"></i></div>
+    <p>Winter</p>
+  </div>
+</div>
+
+<style>
+  #filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 1rem 0;
+  }
+
+  .filter {
+    text-align: center;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+
+  .filter:hover {
+    opacity: 1;
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+
+  .filter i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #2b1055;
+  }
+
+  .filter p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .filter.active {
+    opacity: 1;
+    color: #2b1055;
+  }
+</style>
+
 <body>
-  <h3>All allListings</h3>
-  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+  <!-- <h3>All allListings</h3> -->
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
     <% for(let listing of allListings){ %>
     <a href="/listings/<%=listing._id%>" class="listing-links">
       <div class="card col">

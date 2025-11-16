@@ -17,12 +17,15 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+const MongoStore = require("connect-mongo");
 
 const ExpressError = require("./utils/ExpreesError.js");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/reviews.js");
 const signup = require("./routes/signUp.js");
 const User = require("./models/user.js");
+
+const DBURL = process.env.ATLUS_DB_URL;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -49,18 +52,32 @@ async function main() {
   }
 }
 
-const sessuionOption = {
+const store = MongoStore.create({
+  mongoUrl: DBURL, // Fix: Changed MongoUrl to mongoUrl // Fix: Changed MongoUrl to mongoUrl
+  crypto: {
+    // Fix: Changed crypt to crypto{       // Fix: Changed crypt to crypto
+    secret: "supersecreteode",
+  },
+  touchAfter: 24 * 3600,
+});
+store.on("error", function (e) {
+  console.log("session store error", e);
+});
+
+const sessionOptions = {
+  // Fix: Changed sessuionOption to sessionOptions  // Fix: Changed sessuionOption to sessionOptions
+  store,
   secret: "supersecreteode",
   resave: false,
   saveUninitialized: true,
   cookie: {
-    expire: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // Fix: Changed expire to expires, // Fix: Changed expire to expires
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
   },
 };
 
-app.use(session(sessuionOption));
+app.use(session(sessionOptions));
 app.use(flash());
 
 app.use(passport.initialize());
@@ -83,6 +100,9 @@ app.use((req, res, next) => {
 //   });
 //   User.register(fakeUser, "heelo");
 // });
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
@@ -121,9 +141,9 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { message });
 });
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hello World!");
+// });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

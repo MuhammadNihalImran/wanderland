@@ -45,16 +45,30 @@ module.exports.showEditForm = async (req, res) => {
     req.flash("error", "Listing you requested for does not exit!");
     return res.redirect("/listings");
   }
-  res.render("listings/edit.ejs", { Listing });
+  let original_url = Listing.image.url;
+  original_url = original_url.replace("/upload", "/upload/h_250,w_250");
+  res.render("listings/edit.ejs", { Listing, original_url });
 };
 
-module.exports.editListing = async (req, res, next) => {
+module.exports.editListing = async (req, res) => {
   let { id } = req.params;
-  // let listing = Listings.findById(id)
-  await Listings.findByIdAndUpdate(id, { ...req.body.listing });
-  req.flash("success", "Listing Updated!");
-  res.redirect(`/listings/${id}`);
-  // res.send("heelo");
+  let listing = await Listings.findByIdAndUpdate(
+    id,
+    { ...req.body.listing },
+    { new: true }
+  );
+
+  // Agar user ne naya image upload kiya ho
+  if (req.file) {
+    listing.image = {
+      url: req.file.path, // 👈 Cloudinary ka URL
+      filename: req.file.filename, // 👈 Cloudinary ka filename
+    };
+    await listing.save();
+  }
+
+  req.flash("success", "Listing Updated Successfully!");
+  res.redirect(`/listings/${listing._id}`);
 };
 
 module.exports.destroyListing = async (req, res) => {
