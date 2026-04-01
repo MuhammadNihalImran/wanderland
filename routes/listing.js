@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const wrapAcync = require("../utils/wrapasync.js");
+const wrapAsync = require("../utils/wrapAsync.js");
 const listingController = require("../controllers/listings.js");
 const { isLoggedIn, isOwner, validateListings } = require("../middleware.js");
 
@@ -11,13 +11,16 @@ const upload = multer({ storage });
 
 router
   .route("/")
-  .get(wrapAcync(listingController.index))
+  .get(wrapAsync(listingController.index))
   .post(
     isLoggedIn,
     upload.single("listing[image]"),
     validateListings,
-    wrapAcync(listingController.createListing)
+    wrapAsync(listingController.createListing)
   );
+
+//search suggestions route
+router.get("/search/suggestions", wrapAsync(listingController.getSearchSuggestions));
 
 //create new listing
 router.get("/new", isLoggedIn, listingController.showForm);
@@ -26,22 +29,22 @@ router.get("/new", isLoggedIn, listingController.showForm);
 
 router
   .route("/:id")
-  .get(wrapAcync(listingController.showAllListings))
+  .get(wrapAsync(listingController.showAllListings))
   .put(
     isLoggedIn,
     isOwner,
     upload.single("listing[image]"), // 👈 multer add karo
     validateListings,
-    wrapAcync(listingController.editListing)
+    wrapAsync(listingController.editListing)
   )
-  .delete(isLoggedIn, isOwner, wrapAcync(listingController.destroyListing));
+  .delete(isLoggedIn, isOwner, wrapAsync(listingController.destroyListing));
 
 //create edit route
 router.get(
   "/:id/edit",
   isLoggedIn,
   isOwner,
-  wrapAcync(listingController.showEditForm)
+  wrapAsync(listingController.showEditForm)
 );
 
 //edit and save route

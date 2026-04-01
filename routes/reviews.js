@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 
-const wrapAcync = require("../utils/wrapasync.js");
+const wrapAsync = require("../utils/wrapAsync.js");
 const {
   validateReview,
   isLoggedIn,
@@ -17,7 +17,24 @@ router.delete(
   "/:reviewId",
   isLoggedIn,
   isReviewAuthor,
-  wrapAcync(reviewController.destroyReview)
+  wrapAsync(reviewController.destroyReview)
+);
+
+//Edit review route
+router.get(
+  "/:reviewId/edit",
+  isLoggedIn,
+  isReviewAuthor,
+  wrapAsync(reviewController.renderEditReview)
+);
+
+//Update review route
+router.put(
+  "/:reviewId",
+  isLoggedIn,
+  isReviewAuthor,
+  validateReview,
+  wrapAsync(reviewController.updateReview)
 );
 
 module.exports = router;

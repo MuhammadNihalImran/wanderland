@@ -1,9 +1,7 @@
 if (process.env.NODE_ENV != "production") {
   require("dotenv/config");
 }
-// console.log(process.env.Cloud_NAME);
-// console.log(process.env.Cloud_API_KEY);
-// console.log(process.env.Cloud_API_SECRET);
+
 
 const express = require("express");
 const app = express();
@@ -19,13 +17,13 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const MongoStore = require("connect-mongo");
 
-const ExpressError = require("./utils/ExpreesError.js");
+const ExpressError = require("./utils/ExpressError.js");
 const listings = require("./routes/listing.js");
 const reviews = require("./routes/reviews.js");
 const signup = require("./routes/signUp.js");
 const User = require("./models/user.js");
 
-const DBURL = process.env.ATLUS_DB_URL;
+const DBURL = process.env.ATLAS_DB_URL;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -43,9 +41,7 @@ main()
 
 async function main() {
   try {
-    await mongoose.connect(
-      "mongodb+srv://wanderlust:wanderlust13579@wanderlust.3phqd3l.mongodb.net/"
-    );
+    await mongoose.connect(DBURL);
     console.log("server connection is successful");
   } catch (err) {
     console.log("server connection is failed", err);
@@ -56,7 +52,7 @@ const store = MongoStore.create({
   mongoUrl: DBURL, // Fix: Changed MongoUrl to mongoUrl // Fix: Changed MongoUrl to mongoUrl
   crypto: {
     // Fix: Changed crypt to crypto{       // Fix: Changed crypt to crypto
-    secret: "supersecreteode",
+    secret: process.env.SECRET,
   },
   touchAfter: 24 * 3600,
 });
@@ -67,7 +63,7 @@ store.on("error", function (e) {
 const sessionOptions = {
   // Fix: Changed sessuionOption to sessionOptions  // Fix: Changed sessuionOption to sessionOptions
   store,
-  secret: "supersecreteode",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -93,13 +89,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.get("./demo", async (req, res) => {
-//   const fakeUser = new User({
-//     email: "heeeloo@gamil.com",
-//     username: "nihal",
-//   });
-//   User.register(fakeUser, "heelo");
-// });
+
 app.get("/", (req, res) => {
   res.redirect("/listings");
 });
@@ -108,28 +98,7 @@ app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
 app.use("/", signup);
 
-// app.get("/testlisting", async (req, res) => {
-//   try {
-//     // Create a new sample listing
-//     const sampleListing = new Listings({
-//       title: "Your Sample Listing",
-//       description: "This is a sample description",
-//       price: 1000,
-//       location: "Sample Location",
-//       country: "Sample Country",
-//     });
 
-//     // Save the sample listing to the database
-
-//     await sampleListing.save();
-//     console.log("sampleSave:", sampleListing);
-//     // Send a response back to the client
-//     res.send("Sample listing saved successfully!");
-//   } catch (error) {
-//     console.error("Error saving sample listing:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
 
 app.all("*", (req, res, next) => {
   next(new ExpressError(404, "page not found!"));
@@ -141,9 +110,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { message });
 });
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -9,13 +9,26 @@ const listingSchema = new mongoose.Schema({
 
   description: String,
   image: {
-    url: String,
-    filname: String,
+    url: {
+      type: String,
+      default: "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60",
+      set: (v) => v === "" ? "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60" : v,
+    },
+    filename: String,
   },
 
   price: Number,
   location: String,
   country: String,
+  category: {
+    type: String,
+    enum: [
+      "Trending", "Mountains", "Beaches", "Camping", "Parks",
+      "Cities", "Lakes", "Winter", "Rooms", "Iconic Cities",
+      "Castles", "Amazing Pools", "Farms", "Arctic", "Domes", "Boats"
+    ],
+    required: true,
+  },
   reviews: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,5 +51,5 @@ listingSchema.post("findOneAndDelete", async (listing) => {
   }
 });
 
-const Listings = mongoose.model("Listings", listingSchema);
-module.exports = Listings;
+const Listing = mongoose.model("Listing", listingSchema);
+module.exports = Listing;

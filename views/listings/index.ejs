@@ -1,67 +1,67 @@
 <% layout('/layouts/boilerplate.ejs') -%>
 
   <div id="filters">
-    <div class="filter">
+    <div class="filter" data-category="Trending">
       <div><i class="fas fa-fire"></i></div>
       <p>Trending</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Mountains">
       <div><i class="fas fa-mountain"></i></div>
       <p>Mountains</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Beaches">
       <div><i class="fas fa-umbrella-beach"></i></div>
       <p>Beaches</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Camping">
       <div><i class="fas fa-campground"></i></div>
       <p>Camping</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Parks">
       <div><i class="fas fa-tree"></i></div>
       <p>Parks</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Cities">
       <div><i class="fas fa-city"></i></div>
       <p>Cities</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Lakes">
       <div><i class="fas fa-water"></i></div>
       <p>Lakes</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Winter">
       <div><i class="fas fa-skiing"></i></div>
       <p>Winter</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Rooms">
       <div><i class="fa-solid fa-bed"></i></div>
       <p>Rooms</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Iconic Cities">
       <div><i class="fa-solid fa-mountain-city"></i></div>
       <p>Iconic Cities</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Castles">
       <div><i class="fa-brands fa-fort-awesome"></i></div>
       <p>Castles</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Amazing Pools">
       <div><i class="fa-solid fa-person-swimming"></i></div>
       <p>Amazing Pools</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Farms">
       <div><i class="fa-solid fa-cow"></i></div>
       <p>Farms</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Arctic">
       <div><i class="fa-regular fa-snowflake"></i></div>
       <p>Arctic</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Domes">
       <div><i class="fa-solid fa-igloo"></i></div>
       <p>Domes</p>
     </div>
-    <div class="filter">
+    <div class="filter" data-category="Boats">
       <div><i class="fa-solid fa-ship"></i></div>
       <p>Boats</p>
     </div>
@@ -105,32 +105,187 @@
   </style>
 
   <body>
-    <!-- <h3>All allListings</h3> -->
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-      <% for(let listing of allListings){ %>
-        <a href="/listings/<%=listing._id%>" class="listing-links">
-          <div class="card col">
-            <img src="<%= listing.image.url%>" class="card-img-top" alt="..." style="height: 20rem" />
-            <div class="card-img-overlay"></div>
-            <div class="card-body">
-              <p class="card-text">
-                <b>
-                  <%=listing.title%>
-                </b> <br />
-                &#8377;<%=listing.price%>
-              </p>
-            </div>
+    <!-- Title indicating the active filter/search -->
+    <div id="dynamic-header-container">
+      <% if ((typeof filterCategory !=='undefined' && filterCategory) || (typeof searchQuery !=='undefined' &&
+        searchQuery)) { %>
+        <div class="row mt-3">
+          <div class="col-sm-12">
+            <h4>
+              Showing results
+              <% if (typeof filterCategory !=='undefined' && filterCategory) { %>
+                for category: <strong>
+                  <%= filterCategory %>
+                </strong>
+                <% } %>
+                  <% if ((typeof filterCategory !=='undefined' && filterCategory) && (typeof searchQuery !=='undefined'
+                    && searchQuery)) { %>
+                    and
+                    <% } %>
+                      <% if (typeof searchQuery !=='undefined' && searchQuery) { %>
+                        for search: <strong>"<%= searchQuery %>"</strong>
+                        <% } %>
+            </h4>
           </div>
-        </a>
+        </div>
         <% } %>
     </div>
 
-    <!-- <ul>
-      <% for(let listing of allListings){ %>
-      <li><a href="/listings/<%=listing._id%>">
+    <div id="dynamic-listings-container" class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+      <% if(allListings.length===0) { %>
+        <!-- Empty State Handling -->
+        <div class="col-12 mt-4 text-center">
+          <div class="alert alert-secondary p-5" role="alert">
+            <i class="fa-solid fa-box-open fs-1 mb-3 text-secondary"></i>
+            <h4>No listings found!</h4>
+            <p>We couldn't find any listings matching your search or category.</p>
+            <a href="/listings" class="btn btn-outline-dark mt-2">Clear Filter</a>
+          </div>
+        </div>
+        <% } else { %>
+          <!-- Show Listings -->
+          <% for(let listing of allListings){ %>
+            <a href="/listings/<%=listing._id%>" class="listing-links">
+              <div class="card col">
+                <img
+                  src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60' %>"
+                  onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60';"
+                  class="card-img-top" alt="<%=listing.title%>" style="height: 20rem; object-fit: cover;" />
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                  <p class="card-text">
+                    <b>
+                      <%=listing.title%>
+                    </b> <br />
+                    &#8377;<%=listing.price%>
+                  </p>
+                </div>
+              </div>
+            </a>
+            <% } %>
+              <% } %>
+    </div>
 
-        <%=listing.title%></li>
-      </a>
-      <% } %>
-    </ul> -->
+    <!-- Frontend Filter Logic -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const filters = document.querySelectorAll(".filter");
+
+        // 1. Read query parameter from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentCategory = urlParams.get('category');
+        let currentSearch = urlParams.get('search');
+
+        filters.forEach((filter) => {
+          // 2. Add 'active' class to highlight the currently selected filter
+          const filterCategory = filter.getAttribute("data-category");
+          if (currentCategory === filterCategory) {
+            filter.classList.add("active");
+          }
+
+          // 3. Handle Filtering Clicks
+          filter.addEventListener("click", () => {
+            let newCategory = "";
+            let searchVal = new URLSearchParams(window.location.search).get('search') || "";
+
+            if (currentCategory !== filterCategory) {
+              newCategory = filterCategory;
+            }
+
+            const newUrl = `/listings?category=${encodeURIComponent(newCategory)}&search=${encodeURIComponent(searchVal)}`;
+            window.history.pushState({}, "", newUrl);
+
+            filters.forEach(f => f.classList.remove("active"));
+            if (newCategory) filter.classList.add("active");
+            currentCategory = newCategory;
+
+            const catInput = document.getElementById("search-category-input");
+            if (catInput) {
+              catInput.value = newCategory;
+              catInput.disabled = !newCategory;
+            }
+
+            fetchListings(newCategory, searchVal);
+          });
+        });
+
+        document.addEventListener("ajaxSearch", (e) => {
+          const { search, category } = e.detail;
+          currentCategory = category;
+          currentSearch = search;
+
+          filters.forEach(f => {
+            if (f.getAttribute("data-category") === category) {
+              f.classList.add("active");
+            } else {
+              f.classList.remove("active");
+            }
+          });
+
+          fetchListings(category, search);
+        });
+
+        async function fetchListings(category, search) {
+          try {
+            const res = await fetch(`/listings?category=${encodeURIComponent(category || "")}&search=${encodeURIComponent(search || "")}`, {
+              headers: { 'Accept': 'application/json' }
+            });
+            const data = await res.json();
+            renderListings(data.allListings, data.filterCategory, data.searchQuery);
+          } catch (err) {
+            console.error("Failed to fetch listings automatically", err);
+          }
+        }
+
+        function renderListings(listings, category, search) {
+          const headerContainer = document.getElementById("dynamic-header-container");
+          const listingsContainer = document.getElementById("dynamic-listings-container");
+
+          let headerHTML = "";
+          if (category || search) {
+            let text = "Showing results";
+            if (category) text += ` for category: <strong>${category}</strong>`;
+            if (category && search) text += " and";
+            if (search) text += ` for search: <strong>"${search}"</strong>`;
+            headerHTML = `<div class="row mt-3"><div class="col-sm-12"><h4>${text}</h4></div></div>`;
+          }
+          headerContainer.innerHTML = headerHTML;
+
+          let listingsHTML = "";
+          if (listings.length === 0) {
+            listingsHTML = `
+                        <div class="col-12 mt-4 text-center">
+                          <div class="alert alert-secondary p-5" role="alert">
+                            <i class="fa-solid fa-box-open fs-1 mb-3 text-secondary"></i>
+                            <h4>No listings found!</h4>
+                            <p>We couldn't find any listings matching your search or category.</p>
+                            <button onclick="window.location.href='/listings'" class="btn btn-outline-dark mt-2">Clear Filter</button>
+                          </div>
+                        </div>`;
+          } else {
+            listingsHTML = listings.map(listing => {
+              const imgUrl = listing.image?.url || 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60';
+              const price = listing.price ? listing.price.toLocaleString("en-IN") : "";
+              return `
+                        <a href="/listings/${listing._id}" class="listing-links">
+                              <div class="card col">
+                                <img src="${imgUrl}" 
+                                     onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60';"
+                                     class="card-img-top" alt="${listing.title}"
+                                     style="height: 20rem; object-fit: cover;" />
+                                <div class="card-img-overlay"></div>
+                                <div class="card-body">
+                                  <p class="card-text">
+                                    <b>${listing.title}</b> <br />
+                                    &#8377;${price}
+                                  </p>
+                                </div>
+                              </div>
+                            </a>`;
+            }).join("");
+          }
+          listingsContainer.innerHTML = listingsHTML;
+        }
+      });
+    </script>
   </body>

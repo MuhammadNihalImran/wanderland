@@ -1,18 +1,18 @@
-
 <style>
-
-  .btn-search{
+  .btn-search {
     background-color: #fc424d;
     color: #fff;
     border-radius: 25px;
     padding: 0 1rem 0 1rem;
   }
-  .btn-search:hover{
+
+  .btn-search:hover {
     background-color: #fc424d;
     color: white;
-  
+
   }
-  .search-inp{
+
+  .search-inp {
     border-radius: 25px;
     padding: 0.5rem 3rem 0.5rem 3rem;
     font-size: 1rem;
@@ -22,51 +22,159 @@
 <nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/Listings"><i class="fa-regular fa-compass"></i><a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <div class="navbar-nav">
-        <a class="nav-link"  href="/Listings"
-        >Explore</a
-      >
-      </div>
-      <div class="navbar-nav mx-auto">
-         <form class="d-flex">
-      <input class="form-control me-2 search-inp" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-search" type="submit">Search</button>
-    </form>
-      </div>
-      <div class="navbar-nav ms-auto">
-         <a class="nav-link"  href="/Listings/new"
-        >Airbnb your home</a
-      >
-        <% if(!currUser){%>
-          <a class="nav-link " href="/signup"><b>Sign up
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="navbar-nav">
+            <a class="nav-link" href="/Listings">Explore</a>
+          </div>
+          <div class="navbar-nav mx-auto position-relative" style="min-width: 350px;">
+            <form class="d-flex w-100" id="search-form" action="/listings" method="GET">
+              <!-- Hidden inputs to preserve existing filters -->
+              <input type="hidden" name="category" id="search-category-input" value="">
 
-          </b></a>
-          <a class="nav-link"  href="/login"
-          
-          >
-          <b>
-            Log in
-          </b></a
-          >
-          <%}%>
-          <% if(currUser){%>
-        <a class="nav-link"  href="/logout"
-        ><b>Log out</b></a
-      ><%}%>
-      </div>
-        
-    </div>
+              <input class="form-control me-2 search-inp w-100" name="search" id="search-inp" type="search"
+                placeholder="Search destinations..." aria-label="Search" autocomplete="off">
+              <button class="btn btn-search" type="submit">Search</button>
+            </form>
+
+            <!-- Suggestions Dropdown -->
+            <div id="search-suggestions" class="dropdown-menu w-100 shadow-sm mt-1"
+              style="display: none; position: absolute; top: 100%; max-height: 300px; overflow-y: auto; z-index: 1050; border-radius: 15px;">
+            </div>
+          </div>
+          <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/Listings/new">Airbnb your home</a>
+            <% if(!currUser){%>
+              <a class="nav-link " href="/signup"><b>Sign up
+
+                </b></a>
+              <a class="nav-link" href="/login">
+                <b>
+                  Log in
+                </b></a>
+              <%}%>
+                <% if(currUser){%>
+                  <a class="nav-link" href="/profile"><b>Profile</b></a>
+                  <a class="nav-link" href="/logout"><b>Log out</b></a>
+                  <%}%>
+          </div>
+
+        </div>
   </div>
 </nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInp = document.getElementById("search-inp");
+    const suggestionsBox = document.getElementById("search-suggestions");
+    const searchCategoryInput = document.getElementById("search-category-input");
+
+    // Pass current category to the hidden input so search + category work together
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('category')) {
+      searchCategoryInput.value = urlParams.get('category');
+    } else {
+      searchCategoryInput.disabled = true; // don't send empty category key
+    }
+
+    let timeout = null;
+
+    searchInp.addEventListener("input", (e) => {
+      clearTimeout(timeout);
+      const query = e.target.value.trim();
+
+      if (query.length < 2) {
+        suggestionsBox.style.display = "none";
+        suggestionsBox.innerHTML = "";
+        return;
+      }
+
+      // Debounce API Call (400ms)
+      timeout = setTimeout(async () => {
+        try {
+          const res = await fetch(`/listings/search/suggestions?q=${encodeURIComponent(query)}`);
+          const data = await res.json();
+          renderSuggestions(data.suggestions, query);
+        } catch (err) {
+          console.error("Search fetch error", err);
+        }
+      }, 400);
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!searchInp.contains(e.target) && !suggestionsBox.contains(e.target)) {
+        suggestionsBox.style.display = "none";
+      }
+    });
+
+    function renderSuggestions(suggestions, query) {
+      suggestionsBox.innerHTML = "";
+
+      if (suggestions.length === 0) {
+        suggestionsBox.innerHTML = `<div class="dropdown-item text-muted px-3 py-2">No results found</div>`;
+      } else {
+        suggestions.forEach(item => {
+          const div = document.createElement("a");
+          div.className = "dropdown-item text-wrap border-bottom py-2 px-3 text-decoration-none";
+
+          // Generate link handling preserving category
+          let link = `/listings?search=${encodeURIComponent(item.text)}`;
+          if (urlParams.get('category')) {
+            link += `&category=${encodeURIComponent(urlParams.get('category'))}`;
+          }
+          div.href = link;
+
+          // Highlight matching part
+          const regex = new RegExp(`(${query})`, "gi");
+          const highlightedText = item.text.replace(regex, "<strong>$1</strong>");
+
+          div.innerHTML = `<div class="d-flex flex-column text-dark">
+                             <span class="fs-6">${highlightedText}</span>
+                             <small class="text-muted" style="font-size: 0.75rem;"><i class="fa-solid fa-layer-group me-1"></i>${item.type}</small>
+                           </div>`;
+          suggestionsBox.appendChild(div);
+        });
+      }
+      suggestionsBox.style.display = "block";
+    }
+
+    const searchForm = document.getElementById("search-form");
+    if (searchForm) {
+      searchForm.addEventListener("submit", (e) => {
+        if (window.location.pathname === "/listings" || window.location.pathname === "/" || window.location.pathname === "/Listings") {
+          e.preventDefault();
+          const query = searchInp.value.trim();
+          const category = searchCategoryInput.value || "";
+
+          const newUrl = `/listings?category=${encodeURIComponent(category)}&search=${encodeURIComponent(query)}`;
+          window.history.pushState({}, "", newUrl);
+
+          document.dispatchEvent(new CustomEvent("ajaxSearch", { detail: { search: query, category: category } }));
+          suggestionsBox.style.display = "none";
+        }
+      });
+    }
+
+    suggestionsBox.addEventListener("click", (e) => {
+      const link = e.target.closest("a.dropdown-item");
+      if (link && (window.location.pathname === "/listings" || window.location.pathname === "/" || window.location.pathname === "/Listings")) {
+        e.preventDefault();
+        const href = link.getAttribute("href");
+        window.history.pushState({}, "", href);
+
+        const urlObj = new URL(href, window.location.origin);
+        const searchVal = urlObj.searchParams.get("search") || "";
+        const catVal = urlObj.searchParams.get("category") || "";
+
+        searchInp.value = searchVal;
+        document.dispatchEvent(new CustomEvent("ajaxSearch", { detail: { search: searchVal, category: catVal } }));
+        suggestionsBox.style.display = "none";
+      }
+    });
+
+  });
+</script>

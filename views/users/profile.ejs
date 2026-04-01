@@ -1,0 +1,86 @@
+<% layout('/layouts/boilerplate.ejs') -%>
+
+    <body>
+        <div class="container mt-5 mb-5 px-3">
+            <!-- Profile Header -->
+            <div class="row mb-5 pb-4 border-bottom align-items-center text-center text-md-start">
+                <div class="col-md-auto mb-3 mb-md-0 d-flex justify-content-center">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-dark text-white fw-bold shadow-sm"
+                        style="width: 100px; height: 100px; font-size: 2.5rem;">
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <h1 class="display-6 fw-bold mb-1">Hi, <%= user.username %>!</h1>
+                    <p class="text-muted fs-5 mb-1"><i class="fa-solid fa-envelope me-2"></i>
+                        <%= user.email %>
+                    </p>
+                    <div class="d-flex align-items-center gap-3 mt-2">
+                        <div class="badge bg-secondary p-2" style="font-size: 0.9rem;">
+                            <i class="fa-solid fa-house me-1"></i>
+                            <%= listings.length %>
+                                <%= listings.length===1 ? 'Listing' : 'Listings' %> Created
+                        </div>
+                        <a href="/profile/edit" class="btn btn-sm btn-outline-dark"><i class="fa-solid fa-pen me-1"></i>
+                            Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h3 class="fw-bold mb-4">Your Listings</h3>
+            </div>
+        </div>
+
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+            <% if (listings.length===0) { %>
+                <!-- Empty State Handling -->
+                <div class="col-12 text-center mt-3">
+                    <div class="alert alert-light border p-5 shadow-sm" style="border-radius: 15px;" role="alert">
+                        <i class="fa-regular fa-folder-open fs-1 text-muted mb-3"></i>
+                        <h4>You have not created any listings yet</h4>
+                        <p class="text-secondary">Start hosting your first property today!</p>
+                        <a href="/listings/new" class="btn btn-search mt-2 px-4 py-2">Create Listing</a>
+                    </div>
+                </div>
+                <% } else { %>
+                    <!-- Show Listings -->
+                    <% for (let listing of listings) { %>
+                        <div class="col mb-4">
+                            <a href="/listings/<%=listing._id%>" class="listing-links text-decoration-none text-dark">
+                                <div class="card h-100 border-0 shadow-sm"
+                                    style="border-radius: 12px; overflow: hidden; transition: transform 0.2s;">
+                                    <img src="<%= listing.image?.url || 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60' %>"
+                                        onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60';"
+                                        class="card-img-top w-100" alt="<%=listing.title%>"
+                                        style="height: 18rem; object-fit: cover;" />
+
+                                    <div class="card-body px-3 py-3">
+                                        <h5 class="card-title fw-bold text-truncate mb-1">
+                                            <%=listing.title%>
+                                        </h5>
+                                        <p class="card-text text-muted mb-2 mb-0" style="font-size: 0.95rem;">
+                                            <i class="fa-solid fa-location-dot me-1"></i>
+                                            <%=listing.location%>, <%=listing.country%>
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="fs-6 fw-bold text-success">
+                                                &#8377;<%=listing.price.toLocaleString("en-IN")%> <small
+                                                        class="text-muted fw-normal">/ night</small>
+                                            </span>
+                                            <span class="badge bg-light text-dark border">
+                                                <%=listing.category%>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <!-- Action Buttons Removed -->
+                        </div>
+                        <% } %>
+                            <% } %>
+        </div>
+        </div>
+    </body>
