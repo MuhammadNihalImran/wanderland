@@ -2,111 +2,362 @@
   .btn-search {
     background-color: #fc424d;
     color: #fff;
-    border-radius: 25px;
-    padding: 0 1rem 0 1rem;
+    padding: 0.4rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 0 25px 25px 0 !important;
+    border: none;
+    z-index: 2;
   }
 
   .btn-search:hover {
-    background-color: #fc424d;
+    background-color: #e03b45;
     color: white;
-
   }
 
   .search-inp {
-    border-radius: 25px;
-    padding: 0.5rem 3rem 0.5rem 3rem;
-    font-size: 1rem;
+    border-radius: 25px 0 0 25px !important;
+    padding: 0.4rem 1.2rem !important;
+    font-size: 0.95rem !important;
+    border: 1px solid #ced4da;
+  }
+  
+  .search-inp:focus {
+    box-shadow: none;
+    border-color: #fc424d;
+  }
+
+  /* ============================ */
+  /*  MODERN MOBILE SLIDE MENU    */
+  /* ============================ */
+
+  /* Dimmed Background Overlay */
+  #mobileOverlayBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); 
+    backdrop-filter: blur(3px); /* Modern blur effect */
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+  }
+
+  #mobileOverlayBackground.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Slide-in Side Panel */
+  #mobileSidePanel {
+    position: fixed;
+    top: 0;
+    right: -320px; /* Hidden off screen initially */
+    width: 300px;
+    max-width: 85vw; /* Keeps it safe on extremely narrow phones */
+    height: 100vh;
+    background-color: #ffffff;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    box-shadow: -8px 0 25px rgba(0, 0, 0, 0.15); /* Strong drop shadow edge */
+    transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Buttery smooth easing */
+    overflow-y: auto;
+  }
+
+  #mobileSidePanel.active {
+    right: 0;
+  }
+
+  /* Header inside panel */
+  .mobile-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #f0f0f0; /* Gentle divider */
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mobile-panel-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fc424d; /* Brand color */
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-panel-close {
+    background: #f8f9fa;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .mobile-panel-close:hover {
+    background: #e9ecef;
+  }
+
+  /* Links & Sections Hierarchy */
+  .mobile-menu-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .mobile-menu-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #a0a0a0;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+    font-weight: 700;
+  }
+
+  /* Individual Links (Thumb friendly) */
+  .mobile-menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #444;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    
+    /* Starting state for Staggered Animation */
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  /* Trigger staggered animations when Panel opens */
+  #mobileSidePanel.active .mobile-menu-link {
+    animation: slideInFade 0.4s forwards;
+  }
+
+  #mobileSidePanel.active .mobile-menu-section:nth-child(2) .mobile-menu-link:nth-child(2) { animation-delay: 0.1s; }
+  #mobileSidePanel.active .mobile-menu-section:nth-child(2) .mobile-menu-link:nth-child(3) { animation-delay: 0.15s; }
+  #mobileSidePanel.active .mobile-menu-section:nth-child(3) .mobile-menu-link:nth-child(2) { animation-delay: 0.25s; }
+  #mobileSidePanel.active .mobile-menu-section:nth-child(3) .mobile-menu-link:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes slideInFade {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Hover and Tap Effects */
+  .mobile-menu-link:hover, .mobile-menu-link:active {
+    background-color: #fffbfa;
+    color: #fc424d;
+    transform: scale(1.02); /* Slight pop effect */
+  }
+
+  .mobile-menu-link i {
+    width: 30px;
+    font-size: 1.25rem;
+    color: #888;
+    transition: color 0.2s;
+  }
+
+  .mobile-menu-link:hover i, .mobile-menu-link:active i {
+    color: #fc424d;
+  }
+
+  /* Top Navbar Mobile Tweaks */
+  @media (max-width: 768px) {
+    .btn-search {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+    .search-inp {
+      padding: 0.4rem 0.8rem !important;
+      font-size: 0.85rem !important;
+    }
+    .navbar-brand i {
+      font-size: 1.8rem !important;
+    }
   }
 </style>
 
-<nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/Listings"><i class="fa-regular fa-compass"></i><a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <div class="navbar-nav">
-            <a class="nav-link" href="/Listings">Explore</a>
-          </div>
-          <div class="navbar-nav mx-auto position-relative ms-md-4 me-md-4 w-100 mt-3 mt-md-0 d-flex justify-content-center" style="max-width: 500px;">
-            <form class="d-flex w-100" id="search-form" action="/listings" method="GET">
-              <!-- Hidden inputs to preserve existing filters -->
-              <input type="hidden" name="category" id="search-category-input" value="">
+<nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top py-2">
+  <!-- flex-nowrap ensures Logo, Search, and Hamburger stay on 1 row safely -->
+  <div class="container-fluid d-flex flex-nowrap align-items-center justify-content-between px-2 px-md-3">
+    
+    <!-- Brand Logo (Left) -->
+    <a class="navbar-brand d-flex align-items-center me-2 me-md-3" href="/Listings" style="flex-shrink: 0;">
+      <i class="fa-regular fa-compass fs-2 text-danger"></i>
+    </a>
 
-              <input class="form-control me-2 search-inp w-100" name="search" id="search-inp" type="search"
-                placeholder="Search destinations..." aria-label="Search" autocomplete="off">
-              <button class="btn btn-search" type="submit">Search</button>
-            </form>
-
-            <!-- Suggestions Dropdown -->
-            <div id="search-suggestions" class="dropdown-menu w-100 shadow-sm mt-1"
-              style="display: none; position: absolute; top: 100%; max-height: 300px; overflow-y: auto; z-index: 1050; border-radius: 15px;">
-            </div>
-          </div>
-          <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/Listings/new">Airbnb your home</a>
-            <% if(!currUser){%>
-              <a class="nav-link " href="/signup"><b>Sign up
-
-                </b></a>
-              <a class="nav-link" href="/login">
-                <b>
-                  Log in
-                </b></a>
-              <%}%>
-                <% if(currUser){%>
-                  <a class="nav-link" href="/profile"><b>Profile</b></a>
-                  <a class="nav-link" href="/logout"><b>Log out</b></a>
-                  <%}%>
-          </div>
-
+    <!-- Compact Search Bar (Center, fills space dynamically horizontally between UI) -->
+    <div class="flex-grow-1 position-relative mx-1 mx-md-4" style="max-width: 500px; min-width: 120px;">
+      <form class="m-0 w-100" id="search-form" action="/listings" method="GET">
+        <input type="hidden" name="category" id="search-category-input" value="">
+        <div class="input-group shadow-sm" style="border-radius: 25px;">
+          <input class="form-control search-inp shadow-none" name="search" id="search-inp" type="search" placeholder="Search..." autocomplete="off">
+          <button class="btn btn-search" type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
         </div>
+      </form>
+      <!-- Suggestions Dropdown -->
+      <div id="search-suggestions" class="dropdown-menu w-100 shadow mt-1" style="display: none; position: absolute; top: 100%; max-height: 300px; overflow-y: auto; z-index: 1050; border-radius: 15px;"></div>
+    </div>
+
+    <!-- Desktop Menu (Hidden on Small Screens) -->
+    <div class="d-none d-md-flex align-items-center ms-auto" style="flex-shrink: 0;">
+      <a class="nav-link fw-medium px-3" href="/Listings">Explore</a>
+      <a class="nav-link fw-medium px-3 text-nowrap" href="/Listings/new">Airbnb your home</a>
+      <% if(!currUser){%>
+        <a class="nav-link fw-bold px-3" href="/signup">Sign up</a>
+        <a class="nav-link fw-bold px-3" href="/login">Log in</a>
+      <%} else {%>
+        <a class="nav-link fw-bold px-3" href="/profile">Profile</a>
+        <a class="nav-link fw-bold px-3" href="/logout">Log out</a>
+      <%}%>
+    </div>
+
+    <!-- Mobile Hamburger Menu Button (Right, Visible strictly on Mobile) -->
+    <button class="navbar-toggler border-0 ms-1 p-1" type="button" id="mobileMenuOpenBtn" style="flex-shrink: 0;">
+      <span class="navbar-toggler-icon"></span>
+    </button>
   </div>
 </nav>
 
+<!-- ============================ -->
+<!--   INTERACTIVE MOBILE DRAWER   -->
+<!-- ============================ -->
+
+<!-- Transparent Dark Backdrop (Click out to close) -->
+<div id="mobileOverlayBackground"></div>
+
+<!-- Slide-in Interactive Panel -->
+<div id="mobileSidePanel">
+  
+  <!-- Interactive Header -->
+  <div class="mobile-panel-header">
+    <h3 class="mobile-panel-title">
+      <i class="fa-regular fa-compass me-2"></i>Wanderland
+    </h3>
+    <button class="mobile-panel-close" id="mobileMenuCloseBtn">&times;</button>
+  </div>
+
+  <!-- Primary Links Block -->
+  <div class="mobile-menu-section">
+    <div class="mobile-menu-label">Discover</div>
+    <a href="/Listings" class="mobile-menu-link">
+      <i class="fa-solid fa-earth-americas"></i> Explore
+    </a>
+    <a href="/Listings/new" class="mobile-menu-link">
+      <i class="fa-solid fa-house-chimney-window"></i> Airbnb your home
+    </a>
+  </div>
+
+  <!-- Auth/Account Links -->
+  <div class="mobile-menu-section">
+    <div class="mobile-menu-label">Account</div>
+    <% if(!currUser){ %>
+      <a href="/signup" class="mobile-menu-link">
+        <i class="fa-solid fa-user-plus"></i> Sign up
+      </a>
+      <a href="/login" class="mobile-menu-link">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Log in
+      </a>
+    <% } else { %>
+      <a href="/profile" class="mobile-menu-link">
+        <i class="fa-solid fa-circle-user"></i> Profile
+      </a>
+      <a href="/logout" class="mobile-menu-link">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Log out
+      </a>
+    <% } %>
+  </div>
+
+</div>
+
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    
+    // --- ADVANCED OVERLAY MENU LOGIC --- //
+    const openBtn = document.getElementById("mobileMenuOpenBtn");
+    const closeBtn = document.getElementById("mobileMenuCloseBtn");
+    const sidePanel = document.getElementById("mobileSidePanel");
+    const backdrop = document.getElementById("mobileOverlayBackground");
+
+    function openMenu() {
+      sidePanel.classList.add("active");
+      backdrop.classList.add("active");
+      document.body.style.overflow = "hidden"; // Disable scroll when menu open
+    }
+
+    function closeMenu() {
+      sidePanel.classList.remove("active");
+      backdrop.classList.remove("active");
+      document.body.style.overflow = "auto";
+    }
+
+    if (openBtn && closeBtn && sidePanel && backdrop) {
+      openBtn.addEventListener("click", openMenu);
+      closeBtn.addEventListener("click", closeMenu);
+      backdrop.addEventListener("click", closeMenu); // Closes on backdrop tap!
+    }
+
+    // --- AJAX AUTOCOMPLETE & SEARCH LOGIC --- //
     const searchInp = document.getElementById("search-inp");
     const suggestionsBox = document.getElementById("search-suggestions");
     const searchCategoryInput = document.getElementById("search-category-input");
 
-    // Pass current category to the hidden input so search + category work together
+    // Preserve existing category if searching
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('category')) {
       searchCategoryInput.value = urlParams.get('category');
     } else {
-      searchCategoryInput.disabled = true; // don't send empty category key
+      searchCategoryInput.disabled = true; 
     }
 
     let timeout = null;
+    if (searchInp) {
+        searchInp.addEventListener("input", (e) => {
+          clearTimeout(timeout);
+          const query = e.target.value.trim();
 
-    searchInp.addEventListener("input", (e) => {
-      clearTimeout(timeout);
-      const query = e.target.value.trim();
+          if (query.length < 2) {
+            suggestionsBox.style.display = "none";
+            suggestionsBox.innerHTML = "";
+            return;
+          }
 
-      if (query.length < 2) {
-        suggestionsBox.style.display = "none";
-        suggestionsBox.innerHTML = "";
-        return;
-      }
+          timeout = setTimeout(async () => {
+            try {
+              const res = await fetch(`/listings/search/suggestions?q=${encodeURIComponent(query)}`);
+              const data = await res.json();
+              renderSuggestions(data.suggestions, query);
+            } catch (err) {
+              console.error("Search fetch error", err);
+            }
+          }, 400);
+        });
+    }
 
-      // Debounce API Call (400ms)
-      timeout = setTimeout(async () => {
-        try {
-          const res = await fetch(`/listings/search/suggestions?q=${encodeURIComponent(query)}`);
-          const data = await res.json();
-          renderSuggestions(data.suggestions, query);
-        } catch (err) {
-          console.error("Search fetch error", err);
-        }
-      }, 400);
-    });
-
-    // Hide dropdown when clicking outside
     document.addEventListener("click", (e) => {
-      if (!searchInp.contains(e.target) && !suggestionsBox.contains(e.target)) {
+      if (searchInp && !searchInp.contains(e.target) && !suggestionsBox.contains(e.target)) {
         suggestionsBox.style.display = "none";
       }
     });
@@ -121,14 +372,12 @@
           const div = document.createElement("a");
           div.className = "dropdown-item text-wrap border-bottom py-2 px-3 text-decoration-none";
 
-          // Generate link handling preserving category
           let link = `/listings?search=${encodeURIComponent(item.text)}`;
           if (urlParams.get('category')) {
             link += `&category=${encodeURIComponent(urlParams.get('category'))}`;
           }
           div.href = link;
 
-          // Highlight matching part
           const regex = new RegExp(`(${query})`, "gi");
           const highlightedText = item.text.replace(regex, "<strong>$1</strong>");
 
@@ -155,6 +404,7 @@
 
           document.dispatchEvent(new CustomEvent("ajaxSearch", { detail: { search: query, category: category } }));
           suggestionsBox.style.display = "none";
+          closeMenu(); // Safety close
         }
       });
     }
@@ -173,6 +423,7 @@
         searchInp.value = searchVal;
         document.dispatchEvent(new CustomEvent("ajaxSearch", { detail: { search: searchVal, category: catVal } }));
         suggestionsBox.style.display = "none";
+        closeMenu(); // Safety close
       }
     });
 

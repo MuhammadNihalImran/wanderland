@@ -3,6 +3,32 @@
   <body>
     <div class="row mt-2">
       <div class="col-8 offset-2">
+        <!-- Scoped Back Button Component -->
+        <style>
+          .form-back-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            margin-top: 10px;
+            transition: all 0.2s ease;
+          }
+          .form-back-btn:hover {
+            background-color: #dfdfdf;
+            color: #fc424d;
+          }
+        </style>
+        <a href="/Listings" class="form-back-btn shadow-sm">
+          <i class="fa-solid fa-arrow-left me-2"></i> Back
+        </a>
+
         <h1>Create New Listings</h1>
         <form method="POST" action="/Listings" novalidate class="needs-validation" enctype="multipart/form-data">
           <div class="mb-3">
