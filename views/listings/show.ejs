@@ -1,17 +1,17 @@
 <% layout('/layouts/boilerplate.ejs') -%>
 
   <body>
-    <div class="row">
-      <div class="col offset-2">
-        <h3 class="offset-2">
+    <div class="row mt-4 mb-5">
+      <div class="col-12 col-md-8 mx-auto">
+        <h3 class="mb-3">
           <%=Listing.title%>
         </h3>
-        <div class="card col-6 offset-2">
+        <div class="card border-0 mb-3">
           <img
             src="<%= Listing.image?.url || 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60' %>"
             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60';"
-            class="card-img-top show-img" alt="listing_image" />
-          <div class="card-body">
+            class="card-img-top show-img rounded-4" alt="listing_image" style="height: 40vh; object-fit: cover;" />
+          <div class="card-body px-0 mt-3">
             <p class="card-text">
               Owned By:
               <i>
@@ -40,18 +40,16 @@
 
             <%if(currUser && currUser._id.equals(Listing.owner._id)){%>
 
-              <div class="row">
-                <div class="col-2">
-                  <a href="/Listings/<%=Listing._id%>/edit" class="btn btn-dark px-3 add-btn">Edit</a>
-                </div>
-                <div class="col-1">
-                  <form method="POST" action="/Listings/<%=Listing.id%>?_method=Delete">
-                    <button class="btn btn-dark">delete</button>
-                  </form>
-                </div>
-                <%}%>
-                  <div class="col-12 mb-3">
-                    <hr />
+              <div class="d-flex gap-3 mb-4 mt-3">
+                <a href="/Listings/<%=Listing._id%>/edit" class="btn btn-dark px-4 py-2 add-btn">Edit</a>
+                <form method="POST" action="/Listings/<%=Listing.id%>?_method=Delete" class="m-0">
+                  <button class="btn btn-dark px-4 py-2">Delete</button>
+                </form>
+              </div>
+            <%}%>
+            
+            <div class="mb-3 mt-4">
+              <hr />
                     <% let hasReviewed=false; if(currUser && Listing.reviews) { hasReviewed=Listing.reviews.some(r=>
                       r.author._id.equals(currUser._id));
                       }
@@ -89,13 +87,15 @@
                         </form>
                         <hr />
                         <%}%>
-                          <h4>All Reviews</h4>
+                          
+                          <% if(Listing.reviews && Listing.reviews.length > 0) { %>
+                          <h4 class="mb-4">All Reviews</h4>
                           <div class="row">
                             <% for(let review of Listing.reviews){%>
-                              <div class="card col-5 ms-3 mb-3 review-card">
-                                <div class="card-body">
-                                  <h5 class="card-title">@<%=review.author.username%>
-                                  </h5>
+                              <div class="col-12 col-md-6 mb-4">
+                                <div class="card h-100 review-card p-3 shadow-sm" style="border-radius: 12px;">
+                                  <div class="card-body p-0">
+                                    <h5 class="card-title fw-bold mb-1">@<%=review.author.username%></h5>
                                   <p class="starability-result card-text" data-rating="<%=review.rating %>">
                                     Rated: 3 stars
                                   </p>
@@ -113,10 +113,11 @@
                                     </form>
                                   </div>
                                   <% } %>
+                                </div>
                               </div>
-
-                              <%}%>
+                            <%}%>
                           </div>
+                      <% } %>
                   </div>
               </div>
           </div>
